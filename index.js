@@ -1,6 +1,8 @@
 
 const express = require('express')
 const cors = require('cors')
+const { MongoClient, ServerApiVersion } = require('mongodb');
+
 const app = express()
 const port = process.env.PORT || 5000
 
@@ -8,6 +10,32 @@ const categories = require('./data/categories.json')
 const news = require('./data/news.json')
 
 app.use(cors())
+
+// user name: dragonNews
+// password: oNFitiVl7LV4eKR8
+
+const uri = "mongodb+srv://dragonNews:oNFitiVl7LV4eKR8@cluster0.cvt2jva.mongodb.net/?retryWrites=true&w=majority";
+
+const client = new MongoClient(uri, {
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+    }
+});
+
+async function run() {
+    try {
+        await client.connect();
+        await client.db("admin").command({ ping: 1 });
+        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    } finally {
+        await client.close();
+    }
+}
+run().catch(console.dir);
+
+
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })
